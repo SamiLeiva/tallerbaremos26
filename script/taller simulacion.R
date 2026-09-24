@@ -362,3 +362,112 @@ ggplot(datos, aes(x = Edad, y = VLT_Total_Recall)) +
     plot.margin = margin(10, 10, 10, 10)
   )
 
+
+# ============================================================
+# GRÁFICO DE DISPERSIÓN CON MEDIA PARA CADA EDAD
+# ============================================================
+
+# Calcular la media de VLT para cada edad
+medias_edad <- datos %>%
+  group_by(Edad) %>%
+  summarise(
+    Media = mean(VLT_Total_Recall, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# ============================================================
+# GRÁFICO
+# ============================================================
+
+ggplot(datos, aes(x = Edad, y = VLT_Total_Recall)) +
+  
+  # Puntos individuales
+  geom_point(
+    shape = 1,
+    size = 1.8
+  ) +
+  
+  # Rayitas horizontales que representan la media de cada edad
+  geom_segment(
+    data = medias_edad,
+    aes(
+      x = Edad - 0.3,
+      xend = Edad + 0.3,
+      y = Media,
+      yend = Media
+    ),
+    inherit.aes = FALSE,
+    linewidth = 1
+  ) +
+  
+  # Eje X
+  scale_x_continuous(
+    breaks = seq(20, 80, by = 10),
+    limits = c(15, 85)
+  ) +
+  
+  # Eje Y
+  scale_y_continuous(
+    breaks = seq(20, 70, by = 10),
+    limits = c(15, 80)
+  ) +
+  
+  # Etiquetas
+  labs(
+    x = "Edad (en años)",
+    y = "RAVLT Total evocación"
+  ) +
+  
+  # Estética
+  theme_bw() +
+  
+  theme(
+    panel.grid = element_blank(),
+    panel.border = element_rect(linewidth = 1),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 13),
+    plot.margin = margin(10, 10, 10, 10)
+  )
+
+
+# ============================================================
+# GRÁFICO
+# ============================================================
+
+ggplot(datos, aes(x = Edad, y = VLT_Total_Recall)) +
+  
+  # Puntos individuales
+  geom_point(
+    shape = 1,
+    size = 1.8
+  ) +
+
+  # Eje X
+  scale_x_continuous(
+    breaks = seq(20, 80, by = 10),
+    limits = c(15, 85)
+  ) +
+  
+  # Eje Y
+  scale_y_continuous(
+    breaks = seq(20, 70, by = 10),
+    limits = c(15, 80)
+  ) +
+  
+  # Etiquetas
+  labs(
+    x = "Edad (en años)",
+    y = "RAVLT Total evocación"
+  ) +
+  
+  # Estética
+  theme_bw() +
+  
+  theme(
+    panel.grid = element_blank(),
+    panel.border = element_rect(linewidth = 1),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 13),
+    plot.margin = margin(10, 10, 10, 10)
+  )
+
