@@ -62,7 +62,7 @@ write_xlsx(
 
 
 
-### GRAFICO
+### GRAFICO-------------------
 ggplot(datos, aes(x = Edad, y = VLT_Total_Recall)) +
   geom_point(shape = 1, size = 1.8,) +
   scale_x_continuous(
@@ -281,3 +281,84 @@ ggplot(datos_z, aes(x = Z, y = Densidad)) +
     axis.line = element_line(linewidth = 0.8),
     plot.margin = margin(10, 15, 10, 15)
   )
+
+
+
+# Calcular la media de VLT para cada grupo
+medias_grupo <- datos %>%
+  group_by(grupo) %>%
+  summarise(
+    Media = mean(VLT_Total_Recall, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Agregar los límites de edad de cada grupo
+medias_grupo <- medias_grupo %>%
+  mutate(
+    xmin = c(20, 30, 40, 50, 60, 70),
+    xmax = c(30, 40, 50, 60, 70, 80)
+  )
+
+
+# ============================================================
+# GRÁFICO
+# ============================================================
+
+ggplot(datos, aes(x = Edad, y = VLT_Total_Recall)) +
+  
+  # Puntos
+  geom_point(
+    shape = 1,
+    size = 1.8
+  ) +
+  
+  # Líneas verticales de corte por edad
+  geom_vline(
+    xintercept = c(20, 30, 40, 50, 60, 70, 80),
+    linetype = "dashed",
+    linewidth = 0.5,
+    color = "grey50"
+  ) +
+  
+  # Líneas horizontales con la media de cada grupo
+  geom_segment(
+    data = medias_grupo,
+    aes(
+      x = xmin,
+      xend = xmax,
+      y = Media,
+      yend = Media
+    ),
+    inherit.aes = FALSE,
+    linewidth = 0.9
+  ) +
+  
+  # Eje X
+  scale_x_continuous(
+    breaks = seq(20, 80, by = 10),
+    limits = c(15, 85)
+  ) +
+  
+  # Eje Y
+  scale_y_continuous(
+    breaks = seq(20, 70, by = 10),
+    limits = c(15, 80)
+  ) +
+  
+  # Etiquetas
+  labs(
+    x = "Edad (en años)",
+    y = "RAVLT Total evocación"
+  ) +
+  
+  # Tema
+  theme_bw() +
+  
+  theme(
+    panel.grid = element_blank(),
+    panel.border = element_rect(linewidth = 1),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 13),
+    plot.margin = margin(10, 10, 10, 10)
+  )
+
